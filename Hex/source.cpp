@@ -68,7 +68,5 @@ int main() {
     if (CustomGetline(l)) {
         l.print();
     }
-    
-
 	return 0;
 }
