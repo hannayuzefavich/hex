@@ -61,7 +61,7 @@ void read(vector<string>& board, vector<string>& commands)
 
 int main() {
     vector <string> board, commands;
-    readBoard(board);
+    read(board, commands);
 
     for (string el : board)
     {
