@@ -59,6 +59,69 @@ void read(vector<string>& board, vector<string>& commands)
     readCommands(commands);
 }
 
+int getBoardSize(vector<string>& board) {
+    return board.size();
+}
+
+void handleCommands(const string& str)
+{
+    if (str == "BOARD_SIZE")
+    {
+        
+    }
+    else if (str == "PAWNS_NUMBER")
+    {
+
+    }
+    else if (str == "IS_BOARD_CORRECT")
+    {
+
+    }
+    else if (str == "IS_GAME_OVER")
+    {
+
+    }
+    else if (str == "IS_BOARD_POSSIBLE")
+    {
+
+    }
+    else if (str == "CAN_RED_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_BLUE_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_RED_WIN_IN_2_MOVES_WITH_NAIVE_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_BLUE_WIN_IN_2_MOVES_WITH_NAIVE_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_RED_WIN_IN_1_MOVE_WITH_PERFECT_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_BLUE_WIN_IN_1_MOVE_WITH_PERFECT_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_RED_WIN_IN_2_MOVES_WITH_PERFECT_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_BLUE_WIN_IN_2_MOVES_WITH_PERFECT_OPPONENT")
+    {
+
+    }else {
+        cout << "UNDEFINED";
+    }
+        
+}
+
 int main() {
     vector <string> board, commands;
     read(board, commands);
@@ -67,8 +130,9 @@ int main() {
     {
         cout << el << endl;
     }
-    
-    
-
+    for (string com : commands)
+    {
+        cout << com << endl;
+    }
 	return 0;
 }
