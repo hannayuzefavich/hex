@@ -127,17 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CustomString.cpp" />
-    <ClCompile Include="CustomStringNode.cpp" />
-    <ClCompile Include="ListCustomString.cpp" />
-    <ClCompile Include="ListNodeCustomString.cpp" />
     <ClCompile Include="source.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CustomString.h" />
-    <ClInclude Include="CustomStringNode.h" />
-    <ClInclude Include="ListCustomString.h" />
-    <ClInclude Include="ListNodeCustomString.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
