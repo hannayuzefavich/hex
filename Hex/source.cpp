@@ -1,74 +1,138 @@
 #include <iostream>
-#include "ListCustomString.h"
+#include <string>
+#include <vector>
+
 using namespace std;
 
-bool CustomGetline(ListCustomString& line)
+void readBoard(vector<string>& board)
 {
-    char c;
-    CustomString part;
-    int i = 0;
-    int k = 0;
-    int dash_counter = 0;
-    bool half_done = false;
-    do {
-        cin.get(c);
-    } while (c == ' ');
-    do {
-        if (c == '-') {
-            dash_counter++;
-        }
-        else
+    string line;
+
+    getline(cin, line);
+    int board_size = (count(line.begin(), line.end(), ' ') / 3) + 1;
+    board.insert(board.end(), board_size, "");
+
+    bool after_middle = false;
+    int j, k = 0;
+    
+    while (getline(cin, line))
+    {
+        if (line[0] == '<')
         {
-            if (c == '<' and dash_counter == 0)
-            {
-                half_done = true;
-            }
-            if (dash_counter != 3)
-            {
-                dash_counter = 0;
-            }
-           
+            after_middle = true;
         }
-        if (c == '\n')
+
+        line.erase(0, line.find_first_not_of(' '));
+        line.erase(remove(line.begin(), line.end(), '<'), line.end());
+        line.erase(remove(line.begin(), line.end(), '>'), line.end());
+        line.erase(remove(line.begin(), line.end(), '-'), line.end());
+
+        if (line.size() == 0) break;
+
+        j = 0;
+        if (after_middle)
         {
-            if (line.getSize() > 0 and dash_counter == 3)
-            {
-                return true;
-            }
-            
-            i = 0;
-            if (half_done)
-            {
-                i += k;
-                k++;
-            }
-            else
-            {
-                CustomString tmp;
-                line.addElement(tmp);
-            }
+            j = k;
+            k++;
         }
-        if (c == '<')
+
+        for (int i = 1; i < line.size(); i += 3, j++)
         {
-            cin.get(c);
-            cin.get(c);               
-            line.getByIndex(i).addCharacter(c);  
-            i++;
+            board[j] = line[i] + board[j];
         }
-             
-    } while (cin.get(c));
-   
-    return line.getSize();
+    }
 }
 
+void readCommands(vector<string>& commands)
+{
+    string line;
+
+    while (getline(cin, line))
+    {
+        commands.push_back(line);
+    }
+}
+
+void read(vector<string>& board, vector<string>& commands)
+{
+    readBoard(board);
+    readCommands(commands);
+}
+
+int getBoardSize(vector<string>& board) {
+    return board.size();
+}
+
+void handleCommands(const string& str)
+{
+    if (str == "BOARD_SIZE")
+    {
+        
+    }
+    else if (str == "PAWNS_NUMBER")
+    {
+
+    }
+    else if (str == "IS_BOARD_CORRECT")
+    {
+
+    }
+    else if (str == "IS_GAME_OVER")
+    {
+
+    }
+    else if (str == "IS_BOARD_POSSIBLE")
+    {
+
+    }
+    else if (str == "CAN_RED_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_BLUE_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_RED_WIN_IN_2_MOVES_WITH_NAIVE_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_BLUE_WIN_IN_2_MOVES_WITH_NAIVE_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_RED_WIN_IN_1_MOVE_WITH_PERFECT_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_BLUE_WIN_IN_1_MOVE_WITH_PERFECT_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_RED_WIN_IN_2_MOVES_WITH_PERFECT_OPPONENT")
+    {
+
+    }
+    else if (str == "CAN_BLUE_WIN_IN_2_MOVES_WITH_PERFECT_OPPONENT")
+    {
+
+    }else {
+        cout << "UNDEFINED";
+    }
+        
+}
 
 int main() {
+    vector <string> board, commands;
+    read(board, commands);
 
-    ListCustomString l;
-    if (CustomGetline(l)) {
-        l.print();
+    for (string el : board)
+    {
+        cout << el << endl;
     }
-    
-
+    for (string com : commands)
+    {
+        cout << com << endl;
+    }
 	return 0;
 }
