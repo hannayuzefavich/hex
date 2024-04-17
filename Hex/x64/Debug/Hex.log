@@ -1,4 +1,14 @@
-﻿  source.cpp
-C:\Users\juzef\Semestr 6\Hex\Hex\source.cpp(12,20): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
-  LINK : C:\Users\juzef\Semestr 6\Hex\x64\Debug\Hex.exe not found or not built by the last incremental link; performing full link
-  Hex.vcxproj -> C:\Users\juzef\Semestr 6\Hex\x64\Debug\Hex.exe
+﻿  Board.cpp
+  source.cpp
+C:\Users\juzef\Semestr 5\hex\Hex\Board.h(9,8): error C2143: syntax error: missing ';' before '<'
+  (compiling source file 'Board.cpp')
+  
+C:\Users\juzef\Semestr 5\hex\Hex\Board.h(9,8): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'Board.cpp')
+  
+C:\Users\juzef\Semestr 5\hex\Hex\Board.h(9,23): error C2238: unexpected token(s) preceding ';'
+  (compiling source file 'Board.cpp')
+  
+C:\Users\juzef\Semestr 5\hex\Hex\source.cpp(12,20): warning C4244: 'initializing': conversion from '__int64' to 'int', possible loss of data
+C:\Users\juzef\Semestr 5\hex\Hex\source.cpp(63,22): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
