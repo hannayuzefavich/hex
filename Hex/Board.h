@@ -11,13 +11,19 @@ private:
 	vector<string> commands;
 	int size;
 public:	
-	void handleCommands();
-	void read();
-private:
+	Board(vector<string> board, vector<string> commands);
 	int getSize();
-	void getBoard();
-	void getCommands();
-
-
+	void handleCommands(const string& str);
+	void read();
+private:	
+	int getPawnsNumber();
+	string isBoardCorrect();
+	string isGameOver();
+	string isBoardPossible();
+	string customGetLine();
+	void readBoard();
+	void readCommands();
+	int abs(int num);
+	//void printBoard(); //??
 };
 
