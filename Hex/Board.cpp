@@ -1,32 +1,31 @@
 #include "Board.h"
 
-Board::Board(vector<string> board, vector<string> commands)
+Board::Board()
 {
-    this->board = board;
-    this->commands = commands;
+    read();
 }
 
 void Board::handleCommands(const string& str)
 {
     if (str == "BOARD_SIZE")
     {
-        this->getSize();
+        cout<<this->getSize();
     }
     else if (str == "PAWNS_NUMBER")
     {
-        this->getPawnsNumber();
+        cout<<this->getPawnsNumber();
     }
     else if (str == "IS_BOARD_CORRECT")
     {
-        this->isBoardCorrect();
+        cout<<this->isBoardCorrect();
     }
     else if (str == "IS_GAME_OVER")
     {
-        this->isGameOver();
+        cout<<this->isGameOver();
     }
     else if (str == "IS_BOARD_POSSIBLE")
     {
-        this->isBoardPossible();
+        cout<<this->isBoardPossible();
     }
     else if (str == "CAN_RED_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT")
     {
@@ -76,45 +75,27 @@ int Board::getSize()
     return this->size;
 }
 
+vector<string> Board::getCommands()
+{
+    return this->commands;
+}
+
 int Board::getPawnsNumber()//TODO: count overall pawns number on the board
 {
-    int pawn_counter = 0;
-
-    for (string row : this->board)
-    {
-        for (char c : row)
-        {
-            if (c == 'r' or c == 'b')
-            {
-                pawn_counter++;
-            }
-        }
-    }
-    return pawn_counter;
+    return this->red_pawns_number + this->blue_pawns_number;
 }
 
 string Board::isBoardCorrect() //TODO: check the corresponding numbers of players' pawns
-{    
-    int red = 0;
-    int blue = 0;
+{
     string result;
 
-    for (string row : this->board)
+    if (this->blue_pawns_number == 1 and this->red_pawns_number == 0)
     {
-        for (char c : row)
-        {
-            if (c == 'r')
-            {
-                red++;
-            }
-            if (c == 'b')
-            {
-                blue++;
-            }
-        }
+        result = "NO";
     }
-    int difference = abs(red - blue);
-    if (difference == 1 or difference == 0) 
+    int difference = abs(this->red_pawns_number - this->blue_pawns_number);
+
+    if (difference == 1 or difference == 0)
     {
         result = "YES";
     }
@@ -139,14 +120,14 @@ string Board::isGameOver() //TODO: who won
                 all_blue = false;
                 break;
             }
-        }     
+        }
     }
 
     for (int i = 0; i < this->getSize(); i++)
     {
         for (int j = 0; j < this->getSize(); j++)
         {
-            if (this->board[i][j] != 'r')
+            if (this->board[i][j] != 'r')//Iterate by columns in vector of strings?
             {
                 all_red == false;
                 break;
@@ -170,9 +151,24 @@ string Board::isGameOver() //TODO: who won
     return result;
 }
 
-string Board::isBoardPossible()
-{
-    //TODO: are the players' positions reasonable
+string Board::isBoardPossible() //TODO: are the players' positions reasonable
+{   
+    string result;
+    string winner = this->isGameOver();
+   
+    if ((this->red_pawns_number == 0 and this->blue_pawns_number == 1) 
+            or (abs(this->blue_pawns_number - this->red_pawns_number) > 1) 
+            or (winner == "YES BLUE" and (this->red_pawns_number > this->blue_pawns_number))
+            or (winner == "YES RED" and (this->red_pawns_number == this->blue_pawns_number)))
+    {
+        result = "NO";
+    }
+    else
+    {
+        result = "YES";
+    }
+    
+    return result;
 }
 
 string Board::customGetLine()
@@ -195,40 +191,60 @@ string Board::customGetLine()
 
 void Board::readBoard()
 {
-    string line;
+    char c = ' ';
+    int spaces = 0;
 
-    getline(cin, line);
-    int board_size = (count(line.begin(), line.end(), ' ') / 3) + 1;
-    board.insert(board.end(), board_size, "");
-
-    bool after_middle = false;
-    int j, k = 0;
-
-    while (getline(cin, line))
+    while (c != '\n')
     {
-        if (line[0] == '<')
+        cin.get(c);
+        if (c == ' ') spaces++;
+    }
+
+    this->size = (spaces / 3) + 1;
+    bool middle = false, finish = true;
+
+    this->board.insert(board.end(), size, "");
+
+    char prev;
+    int i = 0, k = 0;
+    this->red_pawns_number = 0;
+    this->blue_pawns_number = 0;
+
+    cin.get(prev);
+    if (prev == '<')
+    {
+        cin.get(prev);
+        cin.get(prev);
+        board[i] = prev;
+        finish = false;
+    }
+
+    while (cin.get(c))
+    {
+        if (prev == '\n' and c == '<')
         {
-            after_middle = true;
+            middle = true;
         }
 
-        line.erase(0, line.find_first_not_of(' '));
-        line.erase(remove(line.begin(), line.end(), '<'), line.end());
-        line.erase(remove(line.begin(), line.end(), '>'), line.end());
-        line.erase(remove(line.begin(), line.end(), '-'), line.end());
-
-        if (line.size() == 0) break;
-
-        j = 0;
-        if (after_middle)
+        if (c == '<')
         {
-            j = k;
-            k++;
+            cin.get(c);
+            cin.get(c);
+            board[i] = c + board[i];
+            if (c == 'r') this->red_pawns_number++;
+            else if (c == 'b') this->blue_pawns_number++;
+            i++;
+            finish = false;
         }
-
-        for (int i = 1; i < line.size(); i += 3, j++)
+        else if (c == '\n')
         {
-            board[j] = line[i] + board[j];
+            if (finish) break;
+            else finish = true;
+
+            if (middle) k++;
+            i = k;
         }
+        prev = c;
     }
 }
 
@@ -246,7 +262,7 @@ void Board::readCommands()
         }
         else
         {
-            line += c;//append?
+            line += c;
         }
     }
 
@@ -254,11 +270,6 @@ void Board::readCommands()
     {
         commands.push_back(line);
     }
-    
-    /*while (getline(cin, line))
-    {
-        commands.push_back(line);
-    }*/
 }
 
 int Board::abs(int num)

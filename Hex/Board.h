@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include <string>
 using namespace std;
 
 class Board
@@ -9,10 +8,13 @@ class Board
 private:
 	vector<string> board;
 	vector<string> commands;
+	int red_pawns_number;
+	int blue_pawns_number;
 	int size;
 public:	
-	Board(vector<string> board, vector<string> commands);
+	Board();
 	int getSize();
+	vector<string> getCommands();
 	void handleCommands(const string& str);
 	void read();
 private:	

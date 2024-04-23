@@ -1,26 +1,18 @@
 #include <iostream>
-#include <string>
 #include <vector>
+#include "Board.h"
 
 using namespace std;
-//customGetLine?
-bool customGetLine() 
-{
-
-}
-
-
 
 int main() {
-    vector <string> board, commands;
-
-    for (string el : board)
-    {
-        cout << el << endl;
-    }
-    for (string com : commands)
-    {
-        cout << com << endl;
-    }
+	Board board;
+	for (int i = 0; i < board.getCommands().size(); i++)
+	{
+		board.handleCommands(board.getCommands()[i]);
+	}
+	/*for (size_t i = 0; i < board.getCommands().size(); i++)
+	{
+		cout << board.getCommands()[i]<<endl;
+	}*/
 	return 0;
 }
