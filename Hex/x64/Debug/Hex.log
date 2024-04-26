@@ -1,3 +1,2 @@
 ﻿  Board.cpp
-C:\Users\juzef\Semestr 5\hex\Hex\Board.cpp(132,25): warning C4553: '==': result of expression not used; did you intend '='?
   Hex.vcxproj -> C:\Users\juzef\Semestr 5\hex\x64\Debug\Hex.exe

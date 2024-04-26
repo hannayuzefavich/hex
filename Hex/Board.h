@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <map>
 using namespace std;
 
 class Board
@@ -19,6 +20,8 @@ public:
 	void read();
 private:	
 	int getPawnsNumber();
+	bool doesPathExist(pair<int,int> actual, pair<int,int> ending, map<pair<int,int>,bool>& visited, const char player);
+	bool isConnected(char player);
 	string isBoardCorrect();
 	string isGameOver();
 	string isBoardPossible();

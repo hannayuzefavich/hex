@@ -1,4 +1,5 @@
 #include "Board.h"
+#include <queue>
 
 Board::Board()
 {
@@ -85,6 +86,94 @@ int Board::getPawnsNumber()//TODO: count overall pawns number on the board
     return this->red_pawns_number + this->blue_pawns_number;
 }
 
+bool Board::doesPathExist(pair<int, int> actual, pair<int, int> ending, map<pair<int, int>, bool>& visited, const char player)
+{
+    if (actual.first < 0 or actual.first == size or actual.second < 0 or actual.second == size)
+    {
+        return false;
+    }
+    if (visited[actual] == true)
+    {
+        return false;
+    }
+    if (board[actual.first][actual.second] != player)
+    {
+        return false;
+    }
+    if (actual == ending)
+    {
+        return true;
+    }
+    visited[actual] = true;
+    return doesPathExist({ actual.first - 1, actual.second }, ending, visited, player) or
+        doesPathExist({ actual.first + 1, actual.second }, ending, visited, player) or
+        doesPathExist({ actual.first, actual.second - 1 }, ending, visited, player) or
+        doesPathExist({ actual.first, actual.second + 1 }, ending, visited, player) or
+        doesPathExist({ actual.first + 1, actual.second - 1 }, ending, visited, player) or
+        doesPathExist({ actual.first - 1, actual.second + 1 }, ending, visited, player);
+}
+
+bool Board::isConnected(const char player)
+{
+    int size = this->getSize();
+    vector<pair<int, int>> starting_points;
+    vector<pair<int, int>> ending_points;
+    map<pair<int,int>,bool> visited;
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            pair<int, int> coords = { i,j };
+            visited[coords] = false;
+        }
+    }
+    for (int i = 0; i<size; i++)
+    {
+        if (this->board[0][i] == player)
+        {
+            pair<int, int> coords = { 0,i };
+            starting_points.push_back(coords);
+        }
+    }
+    for (int i = 0; i < size; i++)
+    {
+        if (this->board[size-1][i] == player)
+        {
+            pair<int, int> coords = { size-1,i };
+            ending_points.push_back(coords);
+        }
+    }
+
+    for (pair<int, int> start_element : starting_points)
+    {
+        for (pair<int, int> end_element : ending_points)
+        {
+            if (doesPathExist(start_element, end_element, visited, player))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+
+
+
+
+   /* for (int i = 0; i < starting_points.size(); i++)
+    {
+        cout << starting_points[i].first<<" ";
+        cout << starting_points[i].second << endl;;
+    }
+    cout << endl;
+    for (int i = 0; i < ending_points.size(); i++)
+    {
+        cout << ending_points[i].first << " ";
+        cout << ending_points[i].second << endl;;
+    }*/
+
+    return false;
+}
+
 string Board::isBoardCorrect() //TODO: check the corresponding numbers of players' pawns
 {
     string result;
@@ -108,47 +197,18 @@ string Board::isBoardCorrect() //TODO: check the corresponding numbers of player
 
 string Board::isGameOver() //TODO: who won
 {
-    string result;
-    bool all_blue = true;
-    bool all_red = true;
-    for (string row : this->board)
+    if (isConnected('r'))
     {
-        for (char c : row)
-        {
-            if (c != 'b')
-            {
-                all_blue = false;
-                break;
-            }
-        }
+        return "YES RED";
     }
-
-    for (int i = 0; i < this->getSize(); i++)
+    else if (isConnected('b'))
     {
-        for (int j = 0; j < this->getSize(); j++)
-        {
-            if (this->board[i][j] != 'r')//Iterate by columns in vector of strings?
-            {
-                all_red == false;
-                break;
-            }
-        }
-    }
-
-    if (all_blue)
-    {
-        result = "YES BLUE";
-    }
-    else if (all_red)
-    {
-        result = "YES RED";
+        return "YES BLUE";
     }
     else
     {
-        result = "NO";
+        return "NO";
     }
-
-    return result;
 }
 
 string Board::isBoardPossible() //TODO: are the players' positions reasonable
