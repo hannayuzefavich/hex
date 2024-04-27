@@ -1,9 +1,9 @@
 #include "Board.h"
-#include <queue>
+
 
 Board::Board()
 {
-    read();
+
 }
 
 void Board::handleCommands(const string& str)
@@ -65,10 +65,15 @@ void Board::handleCommands(const string& str)
     }
 }
 
-void Board::read()
+bool Board::read()
 {
-    readBoard();
+    if (not readBoard())
+    {
+        return false;
+    }
+    
     readCommands();
+    return true;
 }
 
 int Board::getSize()
@@ -88,10 +93,12 @@ int Board::getPawnsNumber()//TODO: count overall pawns number on the board
 
 bool Board::doesPathExist(pair<int, int> actual, pair<int, int> ending, map<pair<int, int>, bool>& visited, const char player)
 {
+    
     if (actual.first < 0 or actual.first == size or actual.second < 0 or actual.second == size)
     {
         return false;
     }
+    //cout << actual.second << " " << actual.first << " " << board[actual.first][actual.second]<<" " << player << endl;
     if (visited[actual] == true)
     {
         return false;
@@ -104,6 +111,10 @@ bool Board::doesPathExist(pair<int, int> actual, pair<int, int> ending, map<pair
     {
         return true;
     }
+    /*else
+    {
+        cout << actual.first << " " << actual.second << " " << ending.first << " " << ending.second << endl;
+    }*/
     visited[actual] = true;
     return doesPathExist({ actual.first - 1, actual.second }, ending, visited, player) or
         doesPathExist({ actual.first + 1, actual.second }, ending, visited, player) or
@@ -129,20 +140,50 @@ bool Board::isConnected(const char player)
     }
     for (int i = 0; i<size; i++)
     {
-        if (this->board[0][i] == player)
+        if(player == 'r')
         {
-            pair<int, int> coords = { 0,i };
-            starting_points.push_back(coords);
+            if (this->board[0][i] == player)
+            {
+                pair<int, int> coords = { 0,i };
+                starting_points.push_back(coords);
+            }
         }
+        else
+        {
+            if (this->board[i][0] == player)
+            {
+                pair<int, int> coords = { i,0 };
+                starting_points.push_back(coords);
+            }
+        }
+
     }
     for (int i = 0; i < size; i++)
     {
-        if (this->board[size-1][i] == player)
+
+        if (player == 'r')
         {
-            pair<int, int> coords = { size-1,i };
-            ending_points.push_back(coords);
+            if (this->board[size - 1][i] == player)
+            {
+                pair<int, int> coords = { size - 1,i };
+                ending_points.push_back(coords);
+            }
         }
+        else
+        {
+            if (this->board[i][size - 1] == player)
+            {
+                pair<int, int> coords = { i,size - 1 };
+                ending_points.push_back(coords);
+            }
+        }      
     }
+
+    /*for (int i = 0; i < ending_points.size(); i++)
+    {
+        cout << ending_points[i].first << " ";
+        cout << ending_points[i].second << endl;;
+    }*/
 
     for (pair<int, int> start_element : starting_points)
     {
@@ -197,6 +238,11 @@ string Board::isBoardCorrect() //TODO: check the corresponding numbers of player
 
 string Board::isGameOver() //TODO: who won
 {
+    string test = isBoardCorrect();
+    if (test == "NO")
+    {
+        return "NO";
+    }
     if (isConnected('r'))
     {
         return "YES RED";
@@ -249,8 +295,12 @@ string Board::customGetLine()
     return line;
 }
 
-void Board::readBoard()
+bool Board::readBoard()
 {
+    if (not cin.get())
+    {
+        return false;
+    }
     char c = ' ';
     int spaces = 0;
 
@@ -260,7 +310,7 @@ void Board::readBoard()
         if (c == ' ') spaces++;
     }
 
-    this->size = (spaces / 3) + 1;
+    this->size = (++spaces / 3) + 1;
     bool middle = false, finish = true;
 
     this->board.insert(board.end(), size, "");
@@ -306,6 +356,7 @@ void Board::readBoard()
         }
         prev = c;
     }
+    return true;
 }
 
 void Board::readCommands()
@@ -314,11 +365,19 @@ void Board::readCommands()
     char c;
 
     while (cin.get(c))
-    {
+    {   
         if (c == '\n')
         {
-            commands.push_back(line);
-            line.clear();
+            if (line.size() > 0)
+            {
+                commands.push_back(line);
+                line.clear();
+            }
+            else
+            {
+                break;
+            }
+            
         }
         else
         {
@@ -335,4 +394,10 @@ void Board::readCommands()
 int Board::abs(int num)
 {
     return (num < 0) ? -num : num;
+}
+
+void Board::clear()
+{
+    board.clear();
+    commands.clear();
 }

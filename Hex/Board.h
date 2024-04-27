@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <string>
 #include <vector>
 #include <map>
 using namespace std;
@@ -17,7 +18,8 @@ public:
 	int getSize();
 	vector<string> getCommands();
 	void handleCommands(const string& str);
-	void read();
+	bool read();
+	void clear();
 private:	
 	int getPawnsNumber();
 	bool doesPathExist(pair<int,int> actual, pair<int,int> ending, map<pair<int,int>,bool>& visited, const char player);
@@ -26,9 +28,10 @@ private:
 	string isGameOver();
 	string isBoardPossible();
 	string customGetLine();
-	void readBoard();
+	bool readBoard();
 	void readCommands();
 	int abs(int num);
+	
 	//void printBoard(); //??
 };
 
