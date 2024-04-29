@@ -10,23 +10,23 @@ void Board::handleCommands(const string& str)
 {
     if (str == "BOARD_SIZE")
     {
-        cout<<this->getSize();
+        cout << this->getSize() << endl;
     }
     else if (str == "PAWNS_NUMBER")
     {
-        cout<<this->getPawnsNumber();
+        cout << this->getPawnsNumber() << endl;
     }
     else if (str == "IS_BOARD_CORRECT")
     {
-        cout<<this->isBoardCorrect();
+        cout << this->isBoardCorrect() << endl;
     }
     else if (str == "IS_GAME_OVER")
     {
-        cout<<this->isGameOver();
+        cout << this->isGameOver() << endl;
     }
     else if (str == "IS_BOARD_POSSIBLE")
     {
-        cout<<this->isBoardPossible();
+        cout << this->isBoardPossible() << endl;
     }
     else if (str == "CAN_RED_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT")
     {
@@ -67,11 +67,7 @@ void Board::handleCommands(const string& str)
 
 bool Board::read()
 {
-    if (not readBoard())
-    {
-        return false;
-    }
-    
+    if (not readBoard()) return false;
     readCommands();
     return true;
 }
@@ -277,32 +273,15 @@ string Board::isBoardPossible() //TODO: are the players' positions reasonable
     return result;
 }
 
-string Board::customGetLine()
-{
-    char c;
-    string line;
-    while (cin.get(c))
-    {
-        if (c == '\n')
-        {
-            break;
-        }
-        else
-        {
-            line += c;
-        }
-    }
-    return line;
-}
-
 bool Board::readBoard()
 {
-    if (not cin.get())
+    char c = ' ';
+    int spaces = 0;
+
+    if (not cin.get(c))
     {
         return false;
     }
-    char c = ' ';
-    int spaces = 0;
 
     while (c != '\n')
     {
@@ -310,7 +289,7 @@ bool Board::readBoard()
         if (c == ' ') spaces++;
     }
 
-    this->size = (++spaces / 3) + 1;
+    this->size = (spaces / 3) + 1;
     bool middle = false, finish = true;
 
     this->board.insert(board.end(), size, "");
@@ -356,6 +335,7 @@ bool Board::readBoard()
         }
         prev = c;
     }
+
     return true;
 }
 
@@ -385,7 +365,7 @@ void Board::readCommands()
         }
     }
 
-    if (!line.empty())
+    if (not line.empty())
     {
         commands.push_back(line);
     }
