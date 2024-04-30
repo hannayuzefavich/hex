@@ -1,31 +1,28 @@
 #include "Board.h"
 
-
-Board::Board(){}
-
 void Board::handleCommands(const string& str)
 {
     if (str == "BOARD_SIZE")
     {
-        cout << this->getSize() << endl<< endl;
+        cout << size << endl<< endl;
     }
     else if (str == "PAWNS_NUMBER")
     {
-        cout<<this->getPawnsNumber() << endl << endl;
+        cout << blue_pawns_number + red_pawns_number << endl << endl;
     }
     else if (str == "IS_BOARD_CORRECT")
     {
-        cout<<this->isBoardCorrect() << endl << endl;
+        cout << isBoardCorrect() << endl << endl;
     }
     else if (str == "IS_GAME_OVER")
     {
-        cout<<this->isGameOver() << endl << endl;
+        cout << isGameOver() << endl << endl;
     }
     else if (str == "IS_BOARD_POSSIBLE")
     {
-        cout<<this->isBoardPossible() << endl << endl;
+        cout << isBoardPossible() << endl << endl;
     }
-    /*else if (str == "CAN_RED_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT")
+    else if (str == "CAN_RED_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT")
     {
 
     }
@@ -56,7 +53,7 @@ void Board::handleCommands(const string& str)
     else if (str == "CAN_BLUE_WIN_IN_2_MOVES_WITH_PERFECT_OPPONENT")
     {
 
-    }*/
+    }
     else {
         cout << "UNDEFINED";
     }
@@ -64,7 +61,7 @@ void Board::handleCommands(const string& str)
 
 bool Board::read()
 {
-    if (!readBoard())
+    if (not readBoard())
     {
         return false;
     }
@@ -73,25 +70,15 @@ bool Board::read()
     return true;
 }
 
-int Board::getSize()
-{
-    return this->size;
-}
-
 vector<string> Board::getCommands()
 {
-    return this->commands;
+    return commands;
 }
 
-int Board::getPawnsNumber()//TODO: count overall pawns number on the board
-{
-    return this->red_pawns_number + this->blue_pawns_number;
-}
-
-bool Board::doesPathExist(pair<int, int> actual, pair<int, int> ending, map<pair<int, int>, bool>& visited, const char player)
+bool Board::doesPathExist(const pair<int, int> actual, const pair<int, int>& ending, map<pair<int, int>, bool>& visited, const char player)
 {
     
-    if (actual.first < 0 or actual.first == size or actual.second < 0 or actual.second == size)
+    if (actual.first < 0 or actual.first == this->size or actual.second < 0 or actual.second == this->size)
     {
         return false;
     }
@@ -99,7 +86,9 @@ bool Board::doesPathExist(pair<int, int> actual, pair<int, int> ending, map<pair
     {
         return false;
     }
-    if (board[actual.first][actual.second] != player)
+    visited[actual] = true;
+
+    if (this->board[actual.first][actual.second] != player)
     {
         return false;
     }
@@ -107,131 +96,95 @@ bool Board::doesPathExist(pair<int, int> actual, pair<int, int> ending, map<pair
     {
         return true;
     }
-    visited[actual] = true;
+   
     return doesPathExist({ actual.first - 1, actual.second }, ending, visited, player) or
         doesPathExist({ actual.first + 1, actual.second }, ending, visited, player) or
         doesPathExist({ actual.first, actual.second - 1 }, ending, visited, player) or
         doesPathExist({ actual.first, actual.second + 1 }, ending, visited, player) or
-        doesPathExist({ actual.first + 1, actual.second - 1 }, ending, visited, player) or
-        doesPathExist({ actual.first - 1, actual.second + 1 }, ending, visited, player);
+        doesPathExist({ actual.first - 1, actual.second + 1 }, ending, visited, player) or
+        doesPathExist({ actual.first + 1, actual.second - 1 }, ending, visited, player);
 }
 
 bool Board::isConnected(const char player)
 {
-    int size = this->getSize();
     vector<pair<int, int>> starting_points;
     vector<pair<int, int>> ending_points;
     map<pair<int,int>,bool> visited;
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {
-            pair<int, int> coords = { i,j };
-            visited[coords] = false;
-        }
-    }
+    
     for (int i = 0; i < size; i++)
     {
         if(player == 'r')
         {
             if (this->board[0][i] == player)
             {
-                pair<int, int> coords = { 0,i };
-                starting_points.push_back(coords);
+                starting_points.push_back({ 0,i });
             }
         }
         else
         {
             if (this->board[i][0] == player)
             {
-                pair<int, int> coords = { i,0 };
-                starting_points.push_back(coords);
+                starting_points.push_back({ i,0 });
             }
         }
 
     }
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < this->size; i++)
     {
 
         if (player == 'r')
         {
             if (this->board[size - 1][i] == player)
             {
-                pair<int, int> coords = { size - 1,i };
-                ending_points.push_back(coords);
+                ending_points.push_back({ size - 1,i });
             }
         }
         else
         {
             if (this->board[i][size - 1] == player)
             {
-                pair<int, int> coords = { i,size - 1 };
-                ending_points.push_back(coords);
+                ending_points.push_back({ i,size - 1 });
             }
         }      
     }
 
-    /*for (int i = 0; i < ending_points.size(); i++)
+    for (const pair<int, int>& start_element : starting_points)
     {
-        cout << ending_points[i].first << " ";
-        cout << ending_points[i].second << endl;;
-    }*/
-
-    for (pair<int, int> start_element : starting_points)
-    {
-        for (pair<int, int> end_element : ending_points)
+        for (const pair<int, int>& end_element : ending_points)
         {
             if (doesPathExist(start_element, end_element, visited, player))
             {
                 return true;
             }
+
+            for (pair<const pair<int, int>, bool>& pair : visited)
+            {
+                pair.second = false;
+            }
         }
     }
     return false;
-
-
-
-
-   /* for (int i = 0; i < starting_points.size(); i++)
-    {
-        cout << starting_points[i].first<<" ";
-        cout << starting_points[i].second << endl;;
-    }
-    cout << endl;
-    for (int i = 0; i < ending_points.size(); i++)
-    {
-        cout << ending_points[i].first << " ";
-        cout << ending_points[i].second << endl;;
-    }*/
 }
 
 string Board::isBoardCorrect() //TODO: check the corresponding numbers of players' pawns
 {
-    if (this->blue_pawns_number == 1 and this->red_pawns_number == 0)
+    if (red_pawns_number - blue_pawns_number == 1 or red_pawns_number - blue_pawns_number == 0)
     {
-        return "NO";
-    }
-    string result;
-    int difference = abs(this->red_pawns_number - this->blue_pawns_number);
-
-    if (difference == 1 or difference == 0)
-    {
-        result = "YES";
+        return "YES";
     }
     else
     {
-        result = "NO";
+        return "NO";
     }
-    return result;
 }
 
 string Board::isGameOver() //TODO: who won
 {
-    string test = isBoardCorrect();
-    if (test == "NO")
+    if (isBoardCorrect() == "NO")
     {
         return "NO";
     }
+
     if (isConnected('r'))
     {
         return "YES RED";
@@ -248,45 +201,49 @@ string Board::isGameOver() //TODO: who won
 
 string Board::isBoardPossible() //TODO: are the players' positions reasonable
 {   
-    string result;
-    string winner = this->isGameOver();
-   
-    if ((this->red_pawns_number == 0 and this->blue_pawns_number == 1) 
-            or (abs(this->blue_pawns_number - this->red_pawns_number) > 1) 
-            or (winner == "YES BLUE" and (this->red_pawns_number > this->blue_pawns_number))
-            or (winner == "YES RED" and (this->red_pawns_number == this->blue_pawns_number)))
+    if (isBoardCorrect() == "NO")
     {
-        result = "NO";
+        return "NO";
     }
-    else
+
+    bool red_wins = isConnected('r');
+    bool blue_wins = isConnected('b');
+
+    if ((red_wins and blue_wins) or
+        (red_wins and red_pawns_number == blue_pawns_number) or
+        (blue_wins and red_pawns_number > blue_pawns_number) or
+        (red_pawns_number + blue_pawns_number == this->size * this->size))
     {
-        result = "YES";
+        return "NO";
+    }
+
+    char player = red_wins ? 'r' : 'b';
+
+    for (string& line : this->board)
+    {
+        for (char& c : line)
+        {
+            if (c == player)
+            {
+                c = ' ';
+                if (isConnected(player))
+                {
+                    c = player;
+                    return "NO";
+                }
+
+                c = player;
+            }
+        }
     }
     
-    return result;
-}
-
-string Board::customGetLine()
-{
-    char c;
-    string line;
-    while (cin.get(c))
-    {
-        if (c == '\n')
-        {
-            break;
-        }
-        else
-        {
-            line += c;
-        }
-    }
-    return line;
+    
+    return "YES";
 }
 
 bool Board::readBoard()
 {
-    if (cin.get() == '\n' || cin.eof())
+    if (cin.get() == '\n' or cin.eof())
     {
         return false;
     }
@@ -366,7 +323,7 @@ void Board::readCommands()
             }
             if (line.size() > 0)
             {
-                commands.push_back(line);
+                this->commands.push_back(line);
                 line.clear();
             }
             else
@@ -381,14 +338,8 @@ void Board::readCommands()
     }
 }
 
-int Board::abs(int num)
-{
-    return (num < 0) ? -num : num;
-}
-
 void Board::clear()
 {
     board.clear();
     commands.clear();
 }
-
